@@ -27,7 +27,9 @@ fi
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
-  php artisan migrate --force
+  if ! php artisan migrate --force; then
+    echo "tumomito: migrate --force falló; Apache arranca igual. Revisá DB_* en Render o desactivá con RUN_MIGRATIONS=false." >&2
+  fi
 fi
 
 if [ "${APP_ENV:-}" = "production" ]; then

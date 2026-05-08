@@ -68,7 +68,7 @@ php artisan serve
   - `DB_EMULATE_PREPARES=true` si usás pooler (6543)
   - `SESSION_DRIVER=file` y `CACHE_STORE=file` (recomendado con pooler; el proyecto ya usa **file/sync por defecto** si no ponés esas vars)
   - `LOG_CHANNEL=stderr` (para ver errores PHP/Laravel en la pestaña **Logs** de Render)
-  - `RUN_MIGRATIONS=true` (por defecto)
+  - `RUN_MIGRATIONS=true` (por defecto): si Postgres falla, el contenedor igual levanta y verás el aviso **tumomito: migrate** en **Logs**.
 
 Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` automáticamente.
 
