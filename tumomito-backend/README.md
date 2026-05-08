@@ -66,7 +66,8 @@ php artisan serve
 - **Recomendadas**:
   - `DB_SSLMODE=require`
   - `DB_EMULATE_PREPARES=true` si usás pooler (6543)
-  - `SESSION_DRIVER=file` y `CACHE_STORE=file` (recomendado con pooler)
+  - `SESSION_DRIVER=file` y `CACHE_STORE=file` (recomendado con pooler; el proyecto ya usa **file/sync por defecto** si no ponés esas vars)
+  - `LOG_CHANNEL=stderr` (para ver errores PHP/Laravel en la pestaña **Logs** de Render)
   - `RUN_MIGRATIONS=true` (por defecto)
 
 Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` automáticamente.
