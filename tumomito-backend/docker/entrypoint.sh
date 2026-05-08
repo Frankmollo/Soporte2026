@@ -23,14 +23,21 @@ fi
 # .env creado como root: 0640 root:root deja a Apache (www-data) sin lectura → 500 en todo el stack.
 if [ -f "$ENV_FILE" ]; then
   chown www-data:www-data "$ENV_FILE" 2>/dev/null || true
-  chmod 0640 "$ENV_FILE" 2>/dev/null || chmod 0644 "$ENV_FILE"
+  chmod 0640 "$ENV_FILE" 2>/dev/null || chmod 0644 "$ENV_FILE" 2>/dev/null || true
 fi
 
 # Render/Supabase: asegurar permisos (por si el volumen/FS cambia)
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
-  php artisan migrate --force
+  if ! php artisan migrate --force --no-interaction; then
+    echo "tumomito: migrate --force falló (revisa DB_* en Render: host pooler Supabase, puerto 6543, SSL)." >&2
+    if [ "${SKIP_FAILED_MIGRATE:-}" = "true" ]; then
+      echo "tumomito: SKIP_FAILED_MIGRATE=true: se arranca Apache igual (solo diagnóstico)." >&2
+    else
+      exit 1
+    fi
+  fi
 fi
 
 if [ "${APP_ENV:-}" = "production" ]; then

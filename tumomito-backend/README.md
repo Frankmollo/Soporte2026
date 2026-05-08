@@ -72,6 +72,8 @@ php artisan serve
 
 Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` automáticamente.
 
+Si el deploy en Render marca **«Exited with status 1»**, abre **Logs**: casi siempre es **`migrate --force`** (credenciales, host/pooler o SSL). Opcional temporal: **`SKIP_FAILED_MIGRATE=true`** para que igual arranque Apache y aislar si el único problema es la BD (`RUN_MIGRATIONS=false` también desactiva migraciones por completo).
+
 En una base **PostgreSQL vacía**, la migración `2026_04_29_036000_create_tumomito_core_tables` crea las tablas del núcleo (`categorias`, `usuarios`, `productos`, `pedidos`, `detalle_pedido`). Después ejecutá los comandos de usuarios/demo de abajo o cargá tus datos.
 
 ### Crear usuarios de prueba (siempre funciona en una BD nueva)
