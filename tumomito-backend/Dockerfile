@@ -30,8 +30,11 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 COPY composer.json composer.lock ./
 COPY . .
-RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
-RUN composer dump-autoload --no-dev --optimize
+RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader \
+  && composer dump-autoload --no-dev --optimize \
+  && rm -f .env
+
+# post-root-package-install crea .env desde .example con APP_KEY vacío y termina pisando cualquier APP_KEY válida.
 
 ### Runtime (Apache + PHP)
 FROM php:8.2-apache
