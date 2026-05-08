@@ -1,15 +1,13 @@
 #!/usr/bin/env sh
 set -eu
 
-# Sin .env en la imagen, Render debe definir APP_KEY. Si falta, Laravel devuelve 500 en
-# rutas web (/, /ping) mientras que /up sigue en 200 — generamos una clave estable por proceso.
+# Render sin .env: si falta APP_KEY, Laravel 500 en rutas web (/). Generamos una en arranque.
 if [ -z "${APP_KEY:-}" ]; then
   export APP_KEY="$(php -r 'echo "base64:".base64_encode(random_bytes(32));')"
-  echo "tumomito: APP_KEY ausente; generada en arranque. Para no invalidar cookies al reiniciar, definí APP_KEY en Render (php artisan key:generate --show)." >&2
+  echo "tumomito: APP_KEY ausente; generada en arranque (definí APP_KEY en Render para clave fija)." >&2
 fi
 
-# Asegurar que exista línea válida APP_KEY en .env: un .env con APP_KEY= vacío (p. ej. de build Composer) sobrescribe
-# la variable de proceso al cargarse con Dotenv y deja Laravel sin clave pese al export anterior.
+# Composer puede haber generado .env con APP_KEY= vacío; Dotenv pisaba la export y dejaba 500.
 ENV_FILE=/var/www/html/.env
 if [ ! -f "$ENV_FILE" ] || ! grep -qsE '^APP_KEY=.+' "$ENV_FILE" 2>/dev/null; then
   tmp="${ENV_FILE}.tmp.$$"
@@ -20,24 +18,16 @@ if [ ! -f "$ENV_FILE" ] || ! grep -qsE '^APP_KEY=.+' "$ENV_FILE" 2>/dev/null; th
   printf 'APP_KEY=%s\n' "$APP_KEY" >>"$ENV_FILE"
 fi
 
-# .env creado como root: 0640 root:root deja a Apache (www-data) sin lectura → 500 en todo el stack.
 if [ -f "$ENV_FILE" ]; then
   chown www-data:www-data "$ENV_FILE" 2>/dev/null || true
-  chmod 0640 "$ENV_FILE" 2>/dev/null || chmod 0644 "$ENV_FILE" 2>/dev/null || true
+  chmod 0644 "$ENV_FILE" 2>/dev/null || true
 fi
 
 # Render/Supabase: asegurar permisos (por si el volumen/FS cambia)
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
-  if ! php artisan migrate --force --no-interaction; then
-    echo "tumomito: migrate --force falló (revisa DB_* en Render: host pooler Supabase, puerto 6543, SSL)." >&2
-    if [ "${SKIP_FAILED_MIGRATE:-}" = "true" ]; then
-      echo "tumomito: SKIP_FAILED_MIGRATE=true: se arranca Apache igual (solo diagnóstico)." >&2
-    else
-      exit 1
-    fi
-  fi
+  php artisan migrate --force
 fi
 
 if [ "${APP_ENV:-}" = "production" ]; then
