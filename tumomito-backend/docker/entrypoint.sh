@@ -23,7 +23,13 @@ if [ -f "$ENV_FILE" ]; then
   chmod 0644 "$ENV_FILE" 2>/dev/null || true
 fi
 
-# Render/Supabase: asegurar permisos (por si el volumen/FS cambia)
+# Sesión FILE y cachés: sin estos dirs Apache suele responder 500 con cuerpo vacío.
+mkdir -p /var/www/html/storage/framework/sessions \
+  /var/www/html/storage/framework/views \
+  /var/www/html/storage/framework/cache/data \
+  /var/www/html/storage/logs \
+  /var/www/html/bootstrap/cache
+
 chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache 2>/dev/null || true
 
 if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
@@ -33,10 +39,8 @@ if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
 fi
 
 if [ "${APP_ENV:-}" = "production" ]; then
-  php artisan config:clear >/dev/null 2>&1 || true
+  php artisan optimize:clear >/dev/null 2>&1 || true
   php artisan config:cache || true
-  php artisan route:cache || true
-  php artisan view:cache || true
 fi
 
 exec "$@"
