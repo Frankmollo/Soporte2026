@@ -29,8 +29,8 @@ RUN apt-get update \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 COPY . .
+RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 RUN composer dump-autoload --no-dev --optimize
 
 ### Runtime (Apache + PHP)
