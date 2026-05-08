@@ -120,7 +120,8 @@ return [
 
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
-        'store' => env('APP_MAINTENANCE_STORE', 'database'),
+        // Sin default "database": evita resolver cache/store contra BD en arranques donde DB aún no existe.
+        'store' => env('APP_MAINTENANCE_STORE'),
     ],
 
 ];

@@ -38,10 +38,6 @@ if [ "${RUN_MIGRATIONS:-true}" = "true" ]; then
   fi
 fi
 
-# No usar optimize:clear aquí: vacía caches de Composer/discovery y en Apache a veces deja Laravel sin arrancar bien.
-if [ "${APP_ENV:-}" = "production" ]; then
-  php artisan config:clear >/dev/null 2>&1 || true
-  php artisan config:cache || true
-fi
-
+# En Docker/PaaS no ejecutar config:cache en arranque: si algo falla queda config viejo y env()
+# puede no coincidir con las vars del proceso; Laravel lee .env vars por petición sin este paso.
 exec "$@"

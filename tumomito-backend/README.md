@@ -46,6 +46,8 @@ php artisan serve
 
 ### Deploy en Render + Supabase
 
+**Si ves HTTP 500 tras un deploy:** revisá **Logs** en Render; poné **`APP_DEBUG=true`** solo unos minutos si hace falta. Para saber si Apache sirve archivos estáticos sin Laravel: **`GET /static-health.txt`** debe responder `ok`.
+
 1) Crear base de datos en Supabase
 
 - Crea un proyecto en [Supabase](https://supabase.com/) y copia los datos de conexión (host, db, user, password).
