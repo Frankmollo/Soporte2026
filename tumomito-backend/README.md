@@ -1,6 +1,6 @@
-## TUMOMITO — ERP + E‑Commerce (Laravel + MySQL)
+## TUMOMITO — ERP + E‑Commerce (Laravel + Postgres)
 
-Proyecto monolítico en **Laravel** (front Blade + back) con **MySQL**.
+Proyecto monolítico en **Laravel** (front Blade + back) con **Postgres** (ideal para **Supabase**).
 
 ### Credenciales de prueba
 
@@ -13,7 +13,8 @@ Si en tu base de datos NO existen esos usuarios, créalos con Artisan (ver abajo
 
 - PHP 8.2+
 - Composer
-- MySQL (o MariaDB)
+- Node 20+ (para Vite)
+- Postgres (local) o Supabase (producción)
 
 ### Instalación rápida
 
@@ -23,13 +24,17 @@ Si en tu base de datos NO existen esos usuarios, créalos con Artisan (ver abajo
 composer install
 ```
 
-2) Configurar `.env`
+2) Configurar `.env` (Supabase / Postgres)
 
 - Copia `.env.example` a `.env`
-- Ajusta credenciales MySQL:
-  - `DB_DATABASE=tumomito_bd`
+- Ajusta credenciales Postgres (Supabase):
+  - `DB_CONNECTION=pgsql`
+  - `DB_HOST=...`
+  - `DB_PORT=5432`
+  - `DB_DATABASE=...`
   - `DB_USERNAME=...`
   - `DB_PASSWORD=...`
+  - `DB_SSLMODE=require`
 
 3) Generar key, migrar y levantar
 
@@ -38,6 +43,30 @@ php artisan key:generate
 php artisan migrate
 php artisan serve
 ```
+
+### Deploy en Render + Supabase
+
+1) Crear base de datos en Supabase
+
+- Crea un proyecto en [Supabase](https://supabase.com/) y copia los datos de conexión (host, db, user, password).
+- Asegúrate de usar SSL (`DB_SSLMODE=require`).
+
+2) Crear Web Service en Render
+
+- En [Render Dashboard](https://dashboard.render.com/), crea un **Web Service** desde tu repo.
+- Render detectará `render.yaml` y construirá con el `Dockerfile`.
+
+3) Variables de entorno en Render (mínimas)
+
+- **Obligatorias**:
+  - `APP_KEY` (genera una y pégala; puedes obtener una local con `php artisan key:generate --show`)
+  - `APP_URL` (tu URL de Render)
+  - `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
+- **Recomendadas**:
+  - `DB_SSLMODE=require`
+  - `RUN_MIGRATIONS=true` (por defecto)
+
+Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` automáticamente.
 
 ### Crear usuarios de prueba (siempre funciona en una BD nueva)
 

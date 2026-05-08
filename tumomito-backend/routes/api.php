@@ -6,13 +6,7 @@ use App\Http\Controllers\Api\CheckoutController;
 use App\Http\Controllers\Api\ErpController;
 use App\Http\Controllers\Api\MarketingController;
 use App\Http\Controllers\Api\ProductoController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 Route::middleware('throttle:120,1')->group(function () {
     Route::get('/productos', [ProductoController::class, 'index']);
     Route::get('/categorias', [CategoriaController::class, 'index']);
