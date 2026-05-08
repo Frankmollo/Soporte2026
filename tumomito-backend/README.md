@@ -71,6 +71,8 @@ php artisan serve
 
 Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` automáticamente.
 
+En una base **PostgreSQL vacía**, la migración `2026_04_29_036000_create_tumomito_core_tables` crea las tablas del núcleo (`categorias`, `usuarios`, `productos`, `pedidos`, `detalle_pedido`). Después ejecutá los comandos de usuarios/demo de abajo o cargá tus datos.
+
 ### Crear usuarios de prueba (siempre funciona en una BD nueva)
 
 ```bash
