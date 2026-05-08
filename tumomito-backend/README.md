@@ -50,6 +50,7 @@ php artisan serve
 
 - Crea un proyecto en [Supabase](https://supabase.com/) y copia los datos de conexión (host, db, user, password).
 - Asegúrate de usar SSL (`DB_SSLMODE=require`).
+- Para el **pooler transacción** de Supabase (host `*.pooler.supabase.com`, puerto **6543**): usuario tipo `postgres.<project_ref>` y base **`postgres`**. Mantén **`DB_EMULATE_PREPARES=true`** (evita errores raros con PgBouncer). En Render conviene **`SESSION_DRIVER=file`** y **`CACHE_STORE=file`** con ese pooler.
 
 2) Crear Web Service en Render
 
@@ -64,6 +65,8 @@ php artisan serve
   - `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
 - **Recomendadas**:
   - `DB_SSLMODE=require`
+  - `DB_EMULATE_PREPARES=true` si usás pooler (6543)
+  - `SESSION_DRIVER=file` y `CACHE_STORE=file` (recomendado con pooler)
   - `RUN_MIGRATIONS=true` (por defecto)
 
 Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` automáticamente.

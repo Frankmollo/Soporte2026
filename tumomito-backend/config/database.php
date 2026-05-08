@@ -97,6 +97,10 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => env('DB_SSLMODE', 'prefer'),
+            // PgBouncer / Supabase transaction pool (6543): evita prepared statements en el servidor.
+            'options' => extension_loaded('pdo_pgsql') && filter_var(env('DB_EMULATE_PREPARES', true), FILTER_VALIDATE_BOOL)
+                ? [PDO::ATTR_EMULATE_PREPARES => true]
+                : [],
         ],
 
         'sqlsrv' => [
