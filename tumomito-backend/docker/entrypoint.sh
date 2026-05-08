@@ -18,6 +18,11 @@ if [ ! -f "$ENV_FILE" ] || ! grep -qsE '^APP_KEY=.+' "$ENV_FILE" 2>/dev/null; th
     mv "$tmp" "$ENV_FILE"
   fi
   printf 'APP_KEY=%s\n' "$APP_KEY" >>"$ENV_FILE"
+fi
+
+# .env creado como root: 0640 root:root deja a Apache (www-data) sin lectura → 500 en todo el stack.
+if [ -f "$ENV_FILE" ]; then
+  chown www-data:www-data "$ENV_FILE" 2>/dev/null || true
   chmod 0640 "$ENV_FILE" 2>/dev/null || chmod 0644 "$ENV_FILE"
 fi
 
