@@ -3,7 +3,7 @@ services:
     name: tumomito-backend
     env: docker
     autoDeploy: true
-    healthCheckPath: /
+    healthCheckPath: /up
     envVars:
       - key: APP_ENV
         value: production

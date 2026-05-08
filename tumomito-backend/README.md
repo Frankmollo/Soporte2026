@@ -60,7 +60,7 @@ php artisan serve
 3) Variables de entorno en Render (mínimas)
 
 - **Obligatorias**:
-  - `APP_KEY` (genera una y pégala; puedes obtener una local con `php artisan key:generate --show`)
+  - `APP_KEY` (**recomendado** generar una y pegarla con `php artisan key:generate --show`). Sin esto el contenedor genera una al arrancar, pero cada reinicio invalida sesiones firmadas hasta que la fijes en el dashboard.
   - `APP_URL` (tu URL de Render)
   - `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
 - **Recomendadas**:
