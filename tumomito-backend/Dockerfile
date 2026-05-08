@@ -7,8 +7,27 @@ COPY . .
 RUN npm run build
 
 ### Install PHP dependencies (Composer)
-FROM composer:2 AS vendor
+FROM php:8.2-cli AS vendor
 WORKDIR /app
+
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    curl git unzip \
+    libpq-dev \
+    libzip-dev \
+    libxml2-dev \
+    libonig-dev \
+  && docker-php-ext-install \
+    pdo_pgsql \
+    mbstring \
+    xml \
+    zip \
+  && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 COPY composer.json composer.lock ./
 RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
 COPY . .
