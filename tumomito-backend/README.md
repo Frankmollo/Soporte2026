@@ -63,7 +63,7 @@ php artisan serve
 
 - **Obligatorias**:
   - `APP_KEY`: ejecutá en tu PC **`php artisan key:generate --show`** y en Render pegá **solo la línea que imprime** (empieza por `base64:`). **No pegues el comando** (`php artisan key:generate --show`): Dotenv falla con *unexpected whitespace* y la app responde 500. Si lo omitís, el contenedor genera una clave al arrancar (las sesiones pueden cambiar al redeploy).
-  - `APP_URL` (tu URL de Render)
+  - `APP_URL`: debe ser la URL pública del servicio, p. ej. **`https://soporte2026-1.onrender.com`** (con `https://`). **No** pongas un hash, UUID ni texto que no sea una URL; si está mal, sesiones/redirects y enlaces pueden fallar.
   - `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
 - **Recomendadas**:
   - `DB_SSLMODE=require`

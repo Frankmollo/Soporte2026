@@ -5,6 +5,9 @@ services:
     autoDeploy: true
     healthCheckPath: /up
     envVars:
+      # URL pública HTTPS del Web Service (cookies, redirects, asset URLs). No usar hashes ni IDs.
+      - key: APP_URL
+        value: https://soporte2026-1.onrender.com
       - key: APP_ENV
         value: production
       - key: APP_DEBUG
