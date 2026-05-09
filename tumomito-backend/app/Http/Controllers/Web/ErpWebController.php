@@ -10,6 +10,7 @@ use App\Models\Pedido;
 use App\Models\Producto;
 use App\Models\Proveedor;
 use App\Services\ComprasService;
+use App\Support\DbDateAgg;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,11 +41,12 @@ class ErpWebController extends Controller
         if (Schema::hasTable('pedidos')) {
             $desde = now()->subDays(13)->startOfDay();
             $hasta = now()->endOfDay();
+            $dayExpr = DbDateAgg::exprDay('fecha');
             $rows = DB::table('pedidos')
                 ->whereBetween('fecha', [$desde, $hasta])
-                ->selectRaw('DATE(fecha) as k, SUM(total) as v')
-                ->groupByRaw('DATE(fecha)')
-                ->orderByRaw('DATE(fecha)')
+                ->selectRaw("{$dayExpr} as k, SUM(total) as v")
+                ->groupByRaw($dayExpr)
+                ->orderByRaw($dayExpr)
                 ->get()
                 ->keyBy('k');
 
@@ -62,10 +64,11 @@ class ErpWebController extends Controller
         if (Schema::hasTable('inventario_movimientos')) {
             $desde = now()->subDays(13)->startOfDay();
             $hasta = now()->endOfDay();
+            $dayExprMov = DbDateAgg::exprDay('fecha');
             $rows = DB::table('inventario_movimientos')
                 ->whereBetween('fecha', [$desde, $hasta])
-                ->selectRaw('DATE(fecha) as k, tipo, SUM(cantidad) as c')
-                ->groupByRaw('DATE(fecha), tipo')
+                ->selectRaw("{$dayExprMov} as k, tipo, SUM(cantidad) as c")
+                ->groupByRaw("{$dayExprMov}, tipo")
                 ->get();
 
             $map = [];
@@ -105,14 +108,15 @@ class ErpWebController extends Controller
         if (Schema::hasTable('compras')) {
             $desde = now()->subDays(29)->startOfDay();
             $hasta = now()->endOfDay();
+            $weekExpr = DbDateAgg::exprIsoWeek('fecha');
             $rows = DB::table('compras')
                 ->whereBetween('fecha', [$desde, $hasta])
-                ->selectRaw('YEAR(fecha) as y, WEEK(fecha, 1) as w, SUM(total) as v')
-                ->groupByRaw('YEAR(fecha), WEEK(fecha, 1)')
-                ->orderByRaw('YEAR(fecha), WEEK(fecha, 1)')
+                ->selectRaw("{$weekExpr} as k, SUM(total) as v")
+                ->groupByRaw($weekExpr)
+                ->orderByRaw($weekExpr)
                 ->get();
 
-            $comprasWeekLabels = $rows->map(fn ($r) => sprintf('%d-W%02d', $r->y, $r->w))->all();
+            $comprasWeekLabels = $rows->pluck('k')->all();
             $comprasWeekSeries = $rows->pluck('v')->map(fn ($x) => (float) $x)->all();
         }
 
@@ -274,10 +278,11 @@ class ErpWebController extends Controller
         if (Schema::hasTable('inventario_movimientos')) {
             $desde = now()->subDays(29)->startOfDay();
             $hasta = now()->endOfDay();
+            $dayExpr = DbDateAgg::exprDay('fecha');
             $rows = DB::table('inventario_movimientos')
                 ->whereBetween('fecha', [$desde, $hasta])
-                ->selectRaw('DATE(fecha) as k, tipo, SUM(cantidad) as c')
-                ->groupByRaw('DATE(fecha), tipo')
+                ->selectRaw("{$dayExpr} as k, tipo, SUM(cantidad) as c")
+                ->groupByRaw("{$dayExpr}, tipo")
                 ->get();
 
             $map = [];

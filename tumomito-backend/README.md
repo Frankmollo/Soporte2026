@@ -112,6 +112,7 @@ php artisan tumomito:crear-usuario cliente@gmail.com 12345 --nombre="Cliente" --
 - **Categorías (ERP)**: `/erp/categorias` (solo admin: crear/editar/eliminar)
 - **Productos (ERP)**: `/erp/productos` (solo admin)
 - **Usuarios (ERP)**: `/erp/usuarios` (solo admin)
+- **BI (ventas/productos)** usa SQL portable (Postgres/MySQL/SQLite); antes fallaba Postgres con funciones tipo `YEAR()` / `DATE_FORMAT()` de MySQL.
 
 ### Nota de seguridad (prototipo)
 

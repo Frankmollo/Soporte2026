@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
+use App\Support\DbDateAgg;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -40,25 +41,25 @@ class BiController extends Controller
         $kTicket = $kPedidos > 0 ? round($kVentas / $kPedidos, 2) : 0;
 
         if ($agrupacion === 'dia') {
+            $d = DbDateAgg::exprDay('fecha');
             $rows = (clone $base)
-                ->selectRaw('DATE(fecha) as k, SUM(total) as v')
-                ->groupByRaw('DATE(fecha)')
-                ->orderByRaw('DATE(fecha)')
+                ->selectRaw("{$d} as k, SUM(total) as v")
+                ->groupByRaw($d)
+                ->orderByRaw($d)
                 ->get();
         } elseif ($agrupacion === 'semana') {
+            $w = DbDateAgg::exprIsoWeek('fecha');
             $rows = (clone $base)
-                ->selectRaw('YEAR(fecha) as y, WEEK(fecha, 1) as w, SUM(total) as v')
-                ->groupByRaw('YEAR(fecha), WEEK(fecha, 1)')
-                ->orderByRaw('YEAR(fecha), WEEK(fecha, 1)')
-                ->get()
-                ->map(function ($r) {
-                    return (object) ['k' => sprintf('%d-W%02d', $r->y, $r->w), 'v' => $r->v];
-                });
+                ->selectRaw("{$w} as k, SUM(total) as v")
+                ->groupByRaw($w)
+                ->orderByRaw($w)
+                ->get();
         } else {
+            $m = DbDateAgg::exprMonth('fecha');
             $rows = (clone $base)
-                ->selectRaw("DATE_FORMAT(fecha, '%Y-%m') as k, SUM(total) as v")
-                ->groupByRaw("DATE_FORMAT(fecha, '%Y-%m')")
-                ->orderByRaw("DATE_FORMAT(fecha, '%Y-%m')")
+                ->selectRaw("{$m} as k, SUM(total) as v")
+                ->groupByRaw($m)
+                ->orderByRaw($m)
                 ->get();
         }
 
