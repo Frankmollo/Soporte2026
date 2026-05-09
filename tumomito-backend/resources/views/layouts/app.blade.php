@@ -78,6 +78,9 @@
                             <a class="sidebar-link {{ request()->routeIs('erp.usuarios.*') ? 'active' : '' }}" href="{{ route('erp.usuarios.index') }}">
                                 <i class="fa-solid fa-users-gear"></i> Usuarios
                             </a>
+                            <a class="sidebar-link {{ request()->routeIs('erp.productos.*') ? 'active' : '' }}" href="{{ route('erp.productos.index') }}">
+                                <i class="fa-solid fa-tags"></i> Catálogo (por categoría)
+                            </a>
                             <a class="sidebar-link {{ request()->routeIs('erp.compras*') ? 'active' : '' }}" href="{{ route('erp.compras') }}">
                                 <i class="fa-solid fa-truck-ramp-box"></i> Compras
                             </a>

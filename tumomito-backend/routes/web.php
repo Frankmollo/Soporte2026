@@ -4,6 +4,7 @@ use App\Http\Controllers\Web\StoreController;
 use App\Http\Controllers\Web\AuthController;
 use App\Http\Controllers\Web\BiController;
 use App\Http\Controllers\Web\ErpWebController;
+use App\Http\Controllers\Web\ErpProductosController;
 use App\Http\Controllers\Web\ErpUsuariosController;
 use App\Http\Controllers\Web\WebCartController;
 use App\Http\Controllers\Web\WebCheckoutController;
@@ -41,6 +42,14 @@ Route::middleware('tumomito.auth')->group(function () {
         Route::get('/stock-bajo', [ErpWebController::class, 'stockBajo'])->name('stock_bajo');
         Route::get('/marketing', [ErpWebController::class, 'marketing'])->name('marketing');
         Route::post('/marketing', [ErpWebController::class, 'guardarMarketing'])->name('marketing.store');
+
+        Route::prefix('productos')->name('productos.')->group(function () {
+            Route::get('/', [ErpProductosController::class, 'index'])->name('index');
+            Route::get('/crear', [ErpProductosController::class, 'create'])->name('create');
+            Route::post('/', [ErpProductosController::class, 'store'])->name('store');
+            Route::get('/{id}/editar', [ErpProductosController::class, 'edit'])->name('edit');
+            Route::post('/{id}', [ErpProductosController::class, 'update'])->name('update');
+        });
 
         Route::prefix('usuarios')->name('usuarios.')->group(function () {
             Route::get('/', [ErpUsuariosController::class, 'index'])->name('index');
