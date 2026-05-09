@@ -65,6 +65,9 @@ class CheckoutService
                 'estado' => self::PEDIDO_ESTADO_FINAL,
                 'total' => $total,
             ];
+            if (Schema::hasColumn('pedidos', 'fecha')) {
+                $pedidoData['fecha'] = now();
+            }
             if (Schema::hasColumn('pedidos', 'canal_venta')) {
                 $pedidoData['canal_venta'] = 'web';
             }

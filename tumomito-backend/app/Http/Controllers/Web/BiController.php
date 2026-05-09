@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Support\DbDateAgg;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -63,8 +64,7 @@ class BiController extends Controller
                 ->get();
         }
 
-        $labels = $rows->pluck('k')->values()->all();
-        $series = $rows->pluck('v')->map(fn ($x) => (float) $x)->values()->all();
+        [$labels, $series] = $this->buildVentasTimeline($desde, $hasta, $agrupacion, $rows);
 
         return view('erp.bi.ventas', [
             'desde' => $desde->toDateString(),
@@ -124,6 +124,61 @@ class BiController extends Controller
             'bottom' => $bottom,
             'hayVentas' => $hayVentas,
         ]);
+    }
+
+    /**
+     * Llena día/semana/mes dentro del rango elegido para que el gráfico coincida con el filtro (huecos en 0).
+     *
+     * @param  \Illuminate\Support\Collection<int,\stdClass>|iterable  $rows  filas SQL con k, v
+     * @return array{0: array<int, string>, 1: array<int, float>}
+     */
+    private function buildVentasTimeline(Carbon $desde, Carbon $hasta, string $agrupacion, iterable $rows): array
+    {
+        $map = [];
+        foreach ($rows as $r) {
+            $map[(string) $r->k] = (float) $r->v;
+        }
+
+        $labels = [];
+        $series = [];
+
+        if ($agrupacion === 'dia') {
+            for (
+                $d = $desde->copy()->startOfDay();
+                $d->lte($hasta->copy()->startOfDay());
+                $d->addDay()
+            ) {
+                $key = $d->toDateString();
+                $labels[] = $key;
+                $series[] = $map[$key] ?? 0.0;
+            }
+
+            return [$labels, $series];
+        }
+
+        if ($agrupacion === 'mes') {
+            $cursor = $desde->copy()->startOfMonth()->startOfDay();
+            $last = $hasta->copy()->startOfMonth()->startOfDay();
+            while ($cursor->lte($last)) {
+                $key = $cursor->format('Y-m');
+                $labels[] = $key;
+                $series[] = $map[$key] ?? 0.0;
+                $cursor->addMonthNoOverflow();
+            }
+
+            return [$labels, $series];
+        }
+
+        $cur = $desde->copy()->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+        $end = $hasta->copy()->startOfWeek(CarbonInterface::MONDAY)->startOfDay();
+        while ($cur->lte($end)) {
+            $key = sprintf('%d-W%02d', $cur->isoWeekYear(), $cur->isoWeek());
+            $labels[] = $key;
+            $series[] = $map[$key] ?? 0.0;
+            $cur->addWeek();
+        }
+
+        return [$labels, $series];
     }
 }
 

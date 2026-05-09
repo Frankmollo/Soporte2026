@@ -95,6 +95,8 @@ Opciones útiles:
 
 Tras correrlo, revisá el mensaje sobre **`TUMOMITO_GUEST_USER_ID`** si usás el usuario invitado del sistema (`guest@tumomito.local`).
 
+**BI / ventas:** el checkout guarda **`pedidos.fecha`** (antes podía quedar `NULL` y el BI no veía esas ventas). La migración **`2026_05_09_060000_pedidos_backfill_fecha_nula`** rellena fechas nulas en instalaciones ya usadas.
+
 ### Crear usuarios de prueba (manual)
 
 ```bash
