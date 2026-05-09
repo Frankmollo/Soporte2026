@@ -74,7 +74,7 @@ php artisan serve
 
 Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` automáticamente.
 
-En una base **PostgreSQL vacía**, la migración `2026_04_29_036000_create_tumomito_core_tables` crea las tablas del núcleo (`categorias`, `usuarios`, `productos`, `pedidos`, `detalle_pedido`). Después ejecutá los comandos de usuarios/demo de abajo o cargá tus datos.
+En una base **PostgreSQL vacía**, las migraciones crean el núcleo (`categorias`, `usuarios`, `productos`, `pedidos`, `detalle_pedido`), módulos ERP/BI incrementalmente y **`carrito`** (líneas de carrito por usuario; sin esa tabla `/carrito/add` falla). Después ejecutá los comandos de usuarios/demo de abajo o cargá tus datos.
 
 ### Poblar Supabase (o cualquier Postgres) de una vez
 
