@@ -36,7 +36,11 @@
                 @endforeach
             </select>
             @if($categorias->isEmpty())
-                <div class="minor-label" style="color:#f88;margin-top:0.35rem">No hay categorías. Creá al menos una en la base o ejecutá el comando de población demo.</div>
+                <div class="minor-label" style="color:#f88;margin-top:0.35rem">
+                    No hay categorías.
+                    <a href="{{ route('erp.categorias.create') }}">Crear categoría</a>
+                    o ejecutá <code style="font-size:0.85em">php artisan tumomito:poblar-demo</code>.
+                </div>
             @endif
         </div>
 

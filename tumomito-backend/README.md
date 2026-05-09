@@ -4,7 +4,7 @@ Proyecto monolítico en **Laravel** (front Blade + back) con **Postgres** (ideal
 
 ### Credenciales de prueba
 
-- **Admin (ERP/BI/Usuarios)**: `frank@gmail.com` / `12345`
+- **Admin (ERP/BI/Usuarios/Categorías/Productos)**: `frank@gmail.com` / `12345`
 - **Cliente (Catálogo/Carrito/Checkout)**: puedes crear uno en `/registro`
 
 Si en tu base de datos NO existen esos usuarios, créalos con Artisan (ver abajo).
@@ -109,6 +109,8 @@ php artisan tumomito:crear-usuario cliente@gmail.com 12345 --nombre="Cliente" --
 - **Registro**: `/registro`
 - **Carrito**: `/carrito` (requiere login)
 - **ERP**: `/erp/dashboard` (solo admin)
+- **Categorías (ERP)**: `/erp/categorias` (solo admin: crear/editar/eliminar)
+- **Productos (ERP)**: `/erp/productos` (solo admin)
 - **Usuarios (ERP)**: `/erp/usuarios` (solo admin)
 
 ### Nota de seguridad (prototipo)

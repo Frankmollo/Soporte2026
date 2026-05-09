@@ -5,7 +5,9 @@
     <div style="display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap">
         <div>
             <h2 class="gradient-text" style="margin:0">Productos por categoría</h2>
-            <div class="minor-label">Solo administradores. Listado ordenado por categoría; filtra o busca por nombre/código.</div>
+            <div class="minor-label">Solo administradores. Listado ordenado por categoría; filtra o busca por nombre/código.
+                <a href="{{ route('erp.categorias.index') }}">Administrar categorías</a>.
+            </div>
         </div>
         <a class="btn-primary" href="{{ route('erp.productos.create') }}">
             <i class="fa-solid fa-plus"></i> Nuevo producto
