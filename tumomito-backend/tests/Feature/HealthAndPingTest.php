@@ -19,4 +19,10 @@ class HealthAndPingTest extends TestCase
 
         $response->assertOk();
     }
+
+    public function test_login_y_registro_get_responden_ok(): void
+    {
+        $this->get('/login')->assertOk();
+        $this->get('/registro')->assertOk();
+    }
 }
