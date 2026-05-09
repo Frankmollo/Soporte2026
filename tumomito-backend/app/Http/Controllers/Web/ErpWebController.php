@@ -268,7 +268,7 @@ class ErpWebController extends Controller
     public function inventario(): View
     {
         $movimientos = Schema::hasTable('inventario_movimientos')
-            ? InventarioMovimiento::query()->orderByDesc('fecha')->limit(150)->get()
+            ? InventarioMovimiento::query()->with('producto')->orderByDesc('fecha')->limit(150)->get()
             : collect();
 
         // Resumen gráfico 30 días (entradas vs salidas)

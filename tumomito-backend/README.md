@@ -97,6 +97,8 @@ Tras correrlo, revisá el mensaje sobre **`TUMOMITO_GUEST_USER_ID`** si usás el
 
 **BI / ventas:** el checkout guarda **`pedidos.fecha`** (antes podía quedar `NULL` y el BI no veía esas ventas). La migración **`2026_05_09_060000_pedidos_backfill_fecha_nula`** rellena fechas nulas en instalaciones ya usadas.
 
+**ERP → Movimientos:** el listado usa la tabla **`inventario_movimientos`**. Las **compras** y el **checkout web** ya generaban filas; **`tumomito:generar-ventas-demo`** ahora también registra **salidas** (misma fecha que el pedido demo) para que el gráfico de 30 días no quede vacío. Si ya generaste ventas demo **antes** de este cambio, volvé a ejecutar el comando (o generá ventas reales con checkout / compras).
+
 ### Crear usuarios de prueba (manual)
 
 ```bash

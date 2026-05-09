@@ -7,6 +7,10 @@
 
 <div class="glass-panel cart-items">
     <h3>Entradas vs salidas (últimos 30 días)</h3>
+    <p class="minor-label">
+        Solo aparecen registros de <strong>compras ERP</strong>, <strong>checkout web</strong> y ventas creadas con
+        <code>tumomito:generar-ventas-demo</code>. Si solo cargaste productos sin esas operaciones, verás el gráfico en cero.
+    </p>
     <div id="chartInv30" style="width:100%;min-height:320px"></div>
 </div>
 
@@ -21,7 +25,7 @@
         @forelse($movimientos as $m)
             <tr>
                 <td>{{ $m->fecha }}</td>
-                <td>{{ $m->producto_id }}</td>
+                <td>{{ $m->producto->nombre ?? ('#'.$m->producto_id) }}</td>
                 <td>{{ strtoupper($m->tipo) }}</td>
                 <td>{{ $m->cantidad }}</td>
                 <td>{{ $m->stock_anterior }}</td>

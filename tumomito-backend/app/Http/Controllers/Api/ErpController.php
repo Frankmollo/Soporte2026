@@ -103,7 +103,7 @@ class ErpController extends Controller
         }
 
         return response()->json(
-            InventarioMovimiento::query()->orderByDesc('fecha')->limit(200)->get()
+            InventarioMovimiento::query()->with('producto')->orderByDesc('fecha')->limit(200)->get()
         );
     }
 }

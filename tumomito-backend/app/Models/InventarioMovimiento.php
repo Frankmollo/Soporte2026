@@ -10,6 +10,11 @@ class InventarioMovimiento extends Model
 
     public $timestamps = false;
 
+    public function producto()
+    {
+        return $this->belongsTo(Producto::class, 'producto_id');
+    }
+
     protected $fillable = [
         'producto_id',
         'tipo',

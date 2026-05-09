@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\DetallePedido;
 use App\Models\Factura;
+use App\Models\InventarioMovimiento;
 use App\Models\Pedido;
 use App\Models\Producto;
 use App\Services\InventarioPorLotesService;
@@ -98,13 +99,34 @@ class TumomitoGenerarVentasDemo extends Command
                         $inventario->asegurarLoteDesdeStockSiSinLotes($p);
                         $p->refresh();
                         if ((int) $p->stock < $cantidad) {
-                            // si quedó corto por lotes, saltar
+                            DetallePedido::query()->whereKey($detalle->id)->delete();
+
                             continue;
                         }
+                        $stockAntes = (int) $p->stock;
                         $inventario->registrarConsumoDesdeLotes($p, $cantidad, $detalle->id);
+                        $p->refresh();
+                        $stockNuevo = (int) $p->stock;
                     } else {
+                        $stockAntes = (int) $p->stock;
                         $p->stock -= $cantidad;
                         $p->saveQuietly();
+                        $p->refresh();
+                        $stockNuevo = (int) $p->stock;
+                    }
+
+                    if (Schema::hasTable('inventario_movimientos')) {
+                        InventarioMovimiento::create([
+                            'producto_id' => $p->id,
+                            'tipo' => 'salida',
+                            'cantidad' => $cantidad,
+                            'stock_anterior' => $stockAntes,
+                            'stock_nuevo' => $stockNuevo,
+                            'referencia_tipo' => 'pedido',
+                            'referencia_id' => $pedido->id,
+                            'fecha' => $fecha,
+                            'nota' => 'Salida demo (tumomito:generar-ventas-demo)',
+                        ]);
                     }
 
                     $total += $sub;
