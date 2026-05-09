@@ -124,6 +124,7 @@ class CheckoutService
                 'nit_ci' => $nitCi,
                 'razon_social' => $razonSocial,
                 'monto_total' => $total,
+                'fecha_emision' => now(),
             ]);
 
             Carrito::where('usuario_id', $usuarioId)->delete();

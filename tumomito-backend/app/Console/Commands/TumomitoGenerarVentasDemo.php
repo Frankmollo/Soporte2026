@@ -126,6 +126,7 @@ class TumomitoGenerarVentasDemo extends Command
                         'nit_ci' => '0000000',
                         'razon_social' => 'DEMO',
                         'monto_total' => $total,
+                        'fecha_emision' => now(),
                     ]);
                 }
 
