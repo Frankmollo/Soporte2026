@@ -76,7 +76,26 @@ Con eso, en cada deploy el contenedor ejecuta `php artisan migrate --force` auto
 
 En una base **PostgreSQL vacía**, la migración `2026_04_29_036000_create_tumomito_core_tables` crea las tablas del núcleo (`categorias`, `usuarios`, `productos`, `pedidos`, `detalle_pedido`). Después ejecutá los comandos de usuarios/demo de abajo o cargá tus datos.
 
-### Crear usuarios de prueba (siempre funciona en una BD nueva)
+### Poblar Supabase (o cualquier Postgres) de una vez
+
+1. En tu PC, copiá las variables de conexión de Supabase en **`.env`** (`DB_*`, pooler **6543**, `DB_SSLMODE=require`, `DB_EMULATE_PREPARES=true`).
+2. Ejecutá migraciones si hace falta: `php artisan migrate --force`
+3. **Un solo comando** crea usuarios demo, categorías, productos con stock, lotes y pedidos de muestra para el BI:
+
+```bash
+php artisan tumomito:poblar-demo
+```
+
+Opciones útiles:
+
+- `--pedidos=0` — solo catálogo + usuarios (sin pedidos demo).
+- `--skip-ventas` — no genera pedidos (equivalente a `--pedidos=0` para esa parte).
+- `--append` — añade más productos `DEMO-*` aunque ya existan otros.
+- `--productos=50` — cantidad de ítems de muestra (por defecto 36).
+
+Tras correrlo, revisá el mensaje sobre **`TUMOMITO_GUEST_USER_ID`** si usás el usuario invitado del sistema (`guest@tumomito.local`).
+
+### Crear usuarios de prueba (manual)
 
 ```bash
 php artisan tumomito:crear-usuario frank@gmail.com 12345 --nombre="Frank Admin" --rol=admin
