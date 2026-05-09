@@ -17,12 +17,18 @@ class StoreController extends Controller
         $esMayorista = $pricingService->esMayorista($usuarioId);
         $query = Producto::with('categoria')->catalogCompatibility();
 
-        if ($request->has('categoria') && $request->categoria != '') {
-            $query->where('categoria_id', $request->categoria);
+        if ($request->filled('categoria')) {
+            $query->where('productos.categoria_id', $request->categoria);
         }
 
+        // Orden por nombre de categoría y luego producto (catálogo coherente con “por categoría”)
+        $query->leftJoin('categorias', 'categorias.id', '=', 'productos.categoria_id')
+            ->orderBy('categorias.nombre')
+            ->orderBy('productos.nombre')
+            ->select('productos.*');
+
         $productos = $query->paginate(24);
-        $categorias = Categoria::all();
+        $categorias = Categoria::query()->orderBy('nombre')->get();
 
         return view('store.catalog', compact('productos', 'categorias', 'esMayorista'));
     }
