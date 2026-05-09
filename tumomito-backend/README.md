@@ -62,7 +62,7 @@ php artisan serve
 3) Variables de entorno en Render (mínimas)
 
 - **Obligatorias**:
-  - `APP_KEY` (**recomendado** generar una y pegarla con `php artisan key:generate --show`). Sin esto el contenedor genera una al arrancar, pero cada reinicio invalida sesiones firmadas hasta que la fijes en el dashboard.
+  - `APP_KEY`: ejecutá en tu PC **`php artisan key:generate --show`** y en Render pegá **solo la línea que imprime** (empieza por `base64:`). **No pegues el comando** (`php artisan key:generate --show`): Dotenv falla con *unexpected whitespace* y la app responde 500. Si lo omitís, el contenedor genera una clave al arrancar (las sesiones pueden cambiar al redeploy).
   - `APP_URL` (tu URL de Render)
   - `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`
 - **Recomendadas**:
